@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #E60404;
+      --secondary: #FFFFFF;
+      --accent: #393D42;
+      --bg-color: #F4F5F7;
+      --border-radius: 6px;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--accent);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .contenedor {
+      background-color: var(--secondary);
+      width: 100%;
+      max-width: 600px;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-top: 5px solid var(--primary);
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 22px;
+      text-align: center;
+    }
+    .ticket-badge {
+      background-color: #FEE2E2;
+      color: #B91C1C;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 24px;
+      font-size: 18px;
+    }
+    .ticket-cerrado {
+      background-color: #F3F4F6;
+      color: #4B5563;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      text-align: center;
+      border: 1px solid #D1D5DB;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: var(--border-radius);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+    }
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+      background: #F9FAFB;
+      padding: 15px;
+      border-radius: var(--border-radius);
+      border: 1px solid #E5E7EB;
+    }
+    .checkbox-grid label {
+      font-weight: normal;
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .checkbox-grid input {
+      margin-right: 8px;
+      width: 16px;
+      height: 16px;
+    }
+    button {
+      background-color: var(--primary);
+      color: white;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: var(--border-radius);
+      width: 100%;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #CC0000;
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="contenedor" id="panel-formulario">
+    <h2>Dictamen Oficial de Calidad</h2>
+    <? if (yaCerrado) { ?>
+      <div class="ticket-cerrado">
+        <h3 style="margin-top: 0; color: #111827;">🔒 Dictamen Cerrado</h3>
+        <p style="margin-bottom: 8px;">El ticket <strong>#<?= ticketPrecargado ?></strong> ya fue dictaminado.</p>
+        <p style="font-size: 13px; color: #6B7280; margin-top: 0;">La información ya está en el archivo histórico, puedes modificarla manualmente.</p>
+      </div>
+    <? } else { ?>
+      <div class="ticket-badge">Ticket #<?= ticketPrecargado ?></div>
+      <form id="form-cierre">
+        <label>1. Área Responsable (Puedes seleccionar varias):</label>
+        <div class="checkbox-grid">
+          <label><input type="checkbox" name="area" value="LOGISTICA"> Logística</label>
+          <label><input type="checkbox" name="area" value="ALMACEN"> Almacén</label>
+          <label><input type="checkbox" name="area" value="PRODUCCION"> Producción</label>
+          <label><input type="checkbox" name="area" value="NPI/INGENIERIA"> NPI/Ingeniería</label>
+          <label><input type="checkbox" name="area" value="CALIDAD"> Calidad</label>
+          <label><input type="checkbox" name="area" value="STP"> STP</label>
+        </div>
+        <label>2. Causa Raíz del problema:</label>
+        <textarea id="in-causa" rows="3" placeholder="Define la causa raíz detectada..." required></textarea>
+        <label>3. Acción Correctiva (Oficial):</label>
+        <textarea id="in-correctiva" rows="3" placeholder="Acción implementada para corregir la desviación..." required></textarea>
+        <label>4. Acción Preventiva (Oficial):</label>
+        <textarea id="in-preventiva" rows="3" placeholder="Acción para evitar reincidencia..." required></textarea>
+        <button type="submit" id="btn-guardar">Emitir Dictamen Final</button>
+      </form>
+    <? } ?>
+  </div>
+
+  <div class="contenedor" id="msg-exito" style="display: none;">
+    ✅ ¡Dictamen emitido con éxito!<br><br>
+    <span style="font-size: 14px; color: #666; font-weight: normal;">Los datos se han registrado correctamente. Ya puedes cerrar esta ventana.</span>
+  </div>
+
+  <? if (!yaCerrado) { ?>
+  <script>
+    const idIncidencia = "<?= idIncidencia ?>";
+
+    document.getElementById('form-cierre').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const checkboxes = document.querySelectorAll('input[name="area"]:checked');
+      if(checkboxes.length === 0) {
+        alert("Por favor selecciona al menos un Área Responsable.");
+        return;
+      }
+      
+      let areasSeleccionadas = [];
+      checkboxes.forEach(cb => areasSeleccionadas.push(cb.value));
+      const areaString = areasSeleccionadas.join(", "); 
+
+      const causa = document.getElementById('in-causa').value;
+      const correctiva = document.getElementById('in-correctiva').value;
+      const preventiva = document.getElementById('in-preventiva').value;
+
+      const btn = document.getElementById('btn-guardar');
+      btn.disabled = true;
+      btn.innerText = "Guardando...";
+
+      google.script.run.withSuccessHandler(function(res) {
+        if (res.exito) {
+          document.getElementById('panel-formulario').style.display = 'none';
+          document.getElementById('msg-exito').style.display = 'block';
+        } else {
+          alert(res.mensaje);
+          btn.disabled = false;
+          btn.innerText = "Emitir Dictamen Final";
+        }
+      }).guardarCierreCalidad(idIncidencia, areaString, causa, correctiva, preventiva);
+    });
+  </script>
+  <? } ?>
+</body>
+</html>

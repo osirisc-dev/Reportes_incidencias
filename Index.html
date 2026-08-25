@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #E60404;
+      --secondary: #FFFFFF;
+      --accent: #393D42;
+      --bg-color: #F4F5F7;
+      --border-radius: 6px;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--accent);
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+    }
+    .contenedor {
+      background-color: var(--secondary);
+      width: 100%;
+      max-width: 600px;
+      height: 100%;
+      min-height: 100%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .encabezado-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-bottom: 4px solid var(--primary);
+    }
+    .contenido-form {
+      padding: 24px 40px 60px 40px;
+    }
+    h2 {
+      color: var(--accent);
+      font-size: 28px;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 24px;
+    }
+    .grupo {
+      margin-bottom: 24px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: var(--border-radius);
+      background-color: #FAFAFA;
+    }
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      background-color: var(--secondary);
+    }
+    .obligatorio {
+      color: var(--primary);
+      font-weight: bold;
+    }
+    .checkbox-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+      background: #FAFAFA;
+      padding: 15px;
+      border-radius: var(--border-radius);
+      border: 1px solid #ccc;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .checkbox-grid label {
+      font-weight: normal;
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1.2;
+    }
+    .checkbox-grid input {
+      margin-right: 12px;
+      min-width: 24px;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+    button {
+      font-family: 'Montserrat', sans-serif;
+      padding: 14px 20px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: var(--border-radius);
+      width: 100%;
+      border: none;
+      transition: all 0.3s ease;
+    }
+    .btn-buscar {
+      background-color: var(--accent);
+      color: var(--secondary);
+      margin-top: 8px;
+    }
+    .btn-buscar:hover {
+      background-color: #2A2D31;
+    }
+    .bloque-botones {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .btn-enviar {
+      background-color: var(--primary);
+      color: var(--secondary);
+      font-size: 18px;
+    }
+    .btn-enviar:hover {
+      background-color: #CC0000;
+    }
+    .btn-enviar:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    .btn-cancelar {
+      background-color: #7F8C8D;
+      color: var(--secondary);
+    }
+    .btn-cancelar:hover {
+      background-color: #95A5A6;
+    }
+    .btn-agregar-foto {
+      background-color: var(--accent);
+      color: var(--secondary);
+      margin-bottom: 12px;
+    }
+    .btn-agregar-foto:hover {
+      background-color: #2A2D31;
+    }
+    .lista-fotos {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .item-foto {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #F8F9FA;
+      border: 1px solid #ddd;
+      padding: 8px 12px;
+      border-radius: var(--border-radius);
+    }
+    .item-foto-texto {
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 80%;
+    }
+    .btn-eliminar-foto {
+      background-color: var(--primary);
+      color: white;
+      padding: 6px 10px;
+      width: auto;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .oculto {
+      display: none !important;
+    }
+    #alerta-msg {
+      margin-top: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      text-align: center;
+    }
+    .msg-error {
+      color: var(--primary);
+    }
+    .msg-info {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="contenedor">
+    <img src="URL_DE_TU_IMAGEN_AQUI" alt="Encabezado Empresa" class="encabezado-img">
+    <div class="contenido-form">
+      <h2>Reporte de Incidencias en Campo</h2>
+
+      <div style="text-align: center; margin-bottom: 20px;">
+        <a href="#" id="toggle-manual" style="color: #1A73E8; text-decoration: underline; font-weight: 600; font-size: 14px;">📖 Ver manual de usuario</a>
+      </div>
+      
+      <div id="caja-manual" style="display: none; background-color: #E8F0FE; padding: 15px; border-radius: 6px; border-left: 4px solid #1A73E8; margin-bottom: 25px; font-size: 13px; color: #333;">
+        <h4 style="margin-top: 0; color: #1A73E8; font-size: 15px;">Guía rápida de llenado</h4>
+        <p style="margin-bottom: 10px;"><strong>1. Ticket y Datos:</strong> Ingresa tu ticket y presiona "Cargar Datos" para autocompletar el equipo. Asegúrate de escribir tu nombre completo en el campo de Técnico.</p>
+        <p style="margin-bottom: 10px;"><strong>2. Clasificación y Descripción:</strong> Selecciona todas las clasificaciones que apliquen al problema. En la descripción, explica a detalle qué falló, cómo lo encontraste y bajo qué condiciones operaba la máquina.</p>
+        <p style="margin-bottom: 10px;"><strong>3. Evidencias (Máx. 5 fotos):</strong> Sube fotos claras y enfocadas del problema. Si vas a pedir piezas, debes subir evidencia de la pieza dañada.</p>
+        <p style="margin-bottom: 10px;"><strong>4. Acciones en Campo:</strong><br>
+        <em>• Correctiva (Obligatoria):</em> Describe paso a paso qué solución implementaste tú hoy para resolver o mitigar la falla.<br>
+        <em>• Preventiva (Opcional):</em> ¿Qué recomiendas que mejore la planta para que esto no vuelva a pasar?</p>
+        <p style="margin-bottom: 0;"><strong>5. Solicitudes Especiales:</strong><br>
+        <em>• Refacciones:</em> Revisa tu checklist para ingresar el Número de Parte exacto.<br>
+        <em>• Apoyo:</em> Al marcar "SÍ", se detonará una alerta urgente a Ingeniería para que se comuniquen contigo.</p>
+      </div>
+      
+      <div style="text-align: center; margin-bottom: 20px;">
+        <button type="button" id="toggle-buscador" style="background-color: #393D42; color: white; padding: 10px 20px; font-size: 14px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; width: 100%; max-width: 300px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">🔍 Buscar mis reportes anteriores</button>
+      </div>
+
+      <div id="caja-buscador" style="display: none; background-color: #F8F9FA; padding: 15px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 25px;">
+        <h4 style="margin-top: 0; color: #393D42; font-size: 15px;">Consulta de Reportes</h4>
+        <p style="font-size: 13px; margin-bottom: 10px;">Ingresa el número de ticket para ver los datos que se han enviado previamente.</p>
+        <div class="grupo" style="margin-bottom: 10px;">
+          <input type="number" id="in-buscar-ticket" placeholder="Ej. 33373">
+          <button class="btn-buscar" type="button" onclick="ejecutarBusquedaReportes()" id="btn-ejecutar-busqueda" style="margin-top: 8px; padding: 10px; font-size: 14px;">Buscar Reportes</button>
+        </div>
+        <div id="resultados-busqueda" style="max-height: 350px; overflow-y: auto;"></div>
+      </div>
+
+      <div class="grupo" id="bloque-busqueda">
+        <label>Número de Ticket:</label>
+        <input type="number" id="in-ticket" placeholder="Ej. 33373">
+        <button class="btn-buscar" type="button" onclick="validarTicket()">Cargar Datos</button>
+        <div id="alerta-msg"></div>
+      </div>
+
+      <form id="form-reporte" class="oculto">
+        <hr style="border: 0; border-top: 1px solid #ddd; margin: 32px 0;">
+        
+        <div class="grupo">
+          <label>Cliente: <span class="obligatorio">*</span></label>
+          <input type="text" id="in-cliente" required>
+        </div>
+        
+        <div class="grupo">
+          <label>Equipo: <span class="obligatorio">*</span></label>
+          <input type="text" id="in-equipo" required>
+        </div>
+        
+        <div class="grupo">
+          <label>Técnico <span style="font-weight:normal; color:#666; font-size:14px;">(Nombre y Apellido)</span>: <span class="obligatorio">*</span></label>
+          <input type="text" id="in-tecnico" placeholder="Ej. JUAN PEREZ" list="lista-tecnicos" autocomplete="off" required>
+          <datalist id="lista-tecnicos">
+            <option value="TECNICO 1"></option>
+            <option value="TECNICO 2"></option>
+            <option value="TECNICO 3"></option>
+            <option value="TECNICO 4"></option>
+            <option value="TECNICO 5"></option>
+            <option value="TECNICO 6"></option>
+            <option value="TECNICO 7"></option>
+            <option value="TECNICO 8"></option>
+            <option value="TECNICO 9"></option>
+            <option value="TECNICO 10"></option>
+            <option value="TECNICO 11"></option>
+            <option value="TECNICO 12"></option>
+            <option value="TECNICO 13"></option>
+            <option value="TECNICO 14"></option>
+            <option value="TECNICO 15"></option>
+          </datalist>
+        </div>
+        
+        <div class="grupo">
+          <label>Número de Serie (NS): <span class="obligatorio">*</span></label>
+          <input type="text" id="in-serie" required>
+        </div>
+
+        <div class="grupo"> 
+          <label>Clasificación (Puedes seleccionar varias): <span class="obligatorio">*</span></label>
+          <div class="checkbox-grid">
+            <label><input type="checkbox" name="clasificacion" value="FALTANTE DE COMPONENTES"> FALTANTE DE COMPONENTES</label>
+            <label><input type="checkbox" name="clasificacion" value="ERROR DE PARAMETROS"> ERROR DE PARAMETROS</label>
+            <label><input type="checkbox" name="clasificacion" value="FALTA DE ACTIVIDADES DE ENSAMBLE"> FALTA DE ACTIVIDADES</label>
+            <label><input type="checkbox" name="clasificacion" value="ERROR DE DISEÑO"> ERROR DE DISEÑO</label>
+            <label><input type="checkbox" name="clasificacion" value="ERROR DE CONFIGURACION"> ERROR DE CONFIGURACION</label>
+            <label><input type="checkbox" name="clasificacion" value="ERROR DE CHECKLIST"> ERROR DE CHECKLIST</label>
+            <label><input type="checkbox" name="clasificacion" value="DEFECTO DE FABRICACIÓN"> DEFECTO DE FABRICACIÓN</label>
+            <label><input type="checkbox" name="clasificacion" value="FALLA DE COMPONENTE"> FALLA DE COMPONENTE</label>
+            <label><input type="checkbox" name="clasificacion" value="DAÑO EN EL TRANSPORTE"> DAÑO EN EL TRANSPORTE</label>
+            <label><input type="checkbox" name="clasificacion" value="DAÑO ESTETICO DE COMPONENTE"> DAÑO ESTETICO</label>
+            <label><input type="checkbox" name="clasificacion" value="DESVIACION DE MANUAL EN CAMPO"> DESVIACION DE MANUAL</label>
+            <label><input type="checkbox" name="clasificacion" value="CONDICION DE OPERACIÓN"> CONDICION DE OPERACIÓN</label>
+            <label><input type="checkbox" name="clasificacion" value="DEFECTO DEL PROVEEDOR"> DEFECTO DEL PROVEEDOR</label>
+          </div>
+        </div>
+
+        <div class="grupo">
+          <label>Descripción: <span class="obligatorio">*</span></label>
+          <textarea id="in-descripcion" rows="4" required></textarea>
+        </div>
+
+        <div class="grupo">
+          <label>Evidencias fotográficas (Máx. 5):</label>
+          <button type="button" class="btn-agregar-foto" id="btn-foto-ui" onclick="document.getElementById('in-evidencia').click()">Tomar Foto / Agregar Archivo</button>
+          <input type="file" id="in-evidencia" class="oculto" accept="image/*,application/pdf" multiple onchange="agregarArchivosAMemoria(this)">
+          <div id="contenedor-fotos" class="lista-fotos"></div>
+        </div>
+
+        <div class="grupo">
+          <label>Acción Correctiva (medida implementada): <span class="obligatorio">*</span></label>
+          <textarea id="in-correctiva-tec" rows="3" placeholder="¿Qué solución inmediata se aplicó en campo?" required></textarea>
+        </div>
+        
+        <div class="grupo">
+          <label>Acción Preventiva (sugerencia): <span style="font-weight:normal; color:#666; font-size:14px;">(Opcional)</span></label>
+          <textarea id="in-preventiva-tec" rows="3" placeholder="¿Qué sugieres para evitar que vuelva a fallar? (Opcional)"></textarea>
+        </div>
+
+        <div class="grupo">
+          <label>¿Requiere envío de piezas? <span class="obligatorio">*</span></label>
+          <select id="in-req-piezas" required onchange="togglePiezas()">
+            <option value="">-- Seleccione una opción --</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+          </select>
+        </div>
+        
+        <div class="grupo oculto" id="grupo-cual-pieza">
+          <label>¿Cuál pieza?: <span class="obligatorio">*</span></label>
+          <input type="text" id="in-cual-pieza" placeholder="Especifique el componente o pieza" style="margin-bottom: 15px;">
+          <label>Número de parte <span style="font-weight:normal; color:#666; font-size:14px;">(revisar checklist)</span>: <span class="obligatorio">*</span></label>
+          <input type="text" id="in-num-parte" placeholder="Ej. MOT-001" style="margin-bottom: 15px;">
+          <label>Evidencias de la refacción (Máx. 5):</label>
+          <button type="button" class="btn-agregar-foto" id="btn-foto-pieza-ui" onclick="document.getElementById('in-foto-pieza').click()">Tomar Foto / Agregar Archivo</button>
+          <input type="file" id="in-foto-pieza" class="oculto" accept="image/*,application/pdf" multiple onchange="agregarArchivosPiezaAMemoria(this)" style="margin-bottom: 15px;">
+          <div id="vista-foto-pieza" class="lista-fotos" style="margin-bottom: 15px;"></div>
+          <label>Destino de envío: <span class="obligatorio">*</span></label>
+          <select id="in-destino">
+            <option value="">-- Seleccione el estado --</option>
+            <option value="AGUASCALIENTES">Aguascalientes</option>
+            <option value="BAJA CALIFORNIA">Baja California</option>
+            <option value="CIUDAD DE MEXICO">Ciudad de México (CDMX)</option>
+            <option value="JALISCO">Jalisco</option>
+            <option value="NUEVO LEON">Nuevo León</option>
+            <option value="QUERETARO">Querétaro</option>
+            <option value="OTRO">Otro Estado</option>
+          </select>
+        </div>
+
+        <div class="grupo">
+          <label>¿Requiere apoyo de Ingeniería para resolver la falla? <span class="obligatorio">*</span></label>
+          <select id="in-req-apoyo" required>
+            <option value="">-- Seleccione una opción --</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+          </select>
+        </div>
+
+        <div class="bloque-botones">
+          <button type="submit" class="btn-enviar" id="btn-submit">Enviar Reporte</button>
+          <button type="button" class="btn-cancelar" onclick="cancelarFormulario()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let memoriaFotos = [];
+    let memoriaFotosPiezas = [];
+
+    document.getElementById('toggle-manual').addEventListener('click', function(e) {
+      e.preventDefault(); 
+      const caja = document.getElementById('caja-manual');
+      if (caja.style.display === 'none') {
+        caja.style.display = 'block';
+        this.innerText = "📖 Ocultar manual de usuario"; 
+      } else {
+        caja.style.display = 'none';
+        this.innerText = "📖 Ver manual de usuario";
+      }
+    });
+
+    function agregarArchivosAMemoria(input) {
+      const archivosNuevos = Array.from(input.files);
+      if (memoriaFotos.length + archivosNuevos.length > 5) {
+        alert("Máximo 5 evidencias por reporte.");
+      }
+      archivosNuevos.forEach(archivo => { 
+        if (memoriaFotos.length < 5) {
+          memoriaFotos.push(archivo); 
+        }
+      });
+      input.value = "";
+      actualizarVistaFotos();
+    }
+
+    function actualizarVistaFotos() {
+      const contenedor = document.getElementById('contenedor-fotos');
+      const botonUI = document.getElementById('btn-foto-ui');
+      contenedor.innerHTML = ""; 
+      
+      memoriaFotos.forEach((archivo, index) => {
+        const div = document.createElement('div');
+        div.className = "item-foto";
+        let miniaturaHtml = "";
+        
+        if (archivo.type.startsWith("image/")) {
+          const urlMini = URL.createObjectURL(archivo);
+          miniaturaHtml = `<img src="${urlMini}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 4px; margin-right: 10px; border: 1px solid #ccc; flex-shrink: 0;">`;
+        }
+
+        div.innerHTML = `
+          <div style="display: flex; align-items: center; overflow: hidden; width: 100%;">
+            ${miniaturaHtml}
+            <div class="item-foto-texto">${archivo.type.startsWith("image/") ? "🖼️" : "📄"} <b>Foto ${index + 1}:</b> ${archivo.name}</div>
+          </div>
+          <button type="button" class="btn-eliminar-foto" onclick="quitarFoto(${index})">✖</button>
+        `;
+        contenedor.appendChild(div);
+      });
+      
+      botonUI.classList.toggle("oculto", memoriaFotos.length >= 5);
+    }
+
+    function quitarFoto(index) {
+      memoriaFotos.splice(index, 1); 
+      actualizarVistaFotos(); 
+    }
+
+    function agregarArchivosPiezaAMemoria(input) {
+      const archivosNuevos = Array.from(input.files);
+      if (memoriaFotosPiezas.length + archivosNuevos.length > 5) {
+        alert("Máximo 5 evidencias de la refacción.");
+      }
+      archivosNuevos.forEach(archivo => { 
+        if (memoriaFotosPiezas.length < 5) {
+          memoriaFotosPiezas.push(archivo); 
+        }
+      });
+      input.value = "";
+      actualizarVistaFotosPiezas();
+    }
+
+    function actualizarVistaFotosPiezas() {
+      const contenedor = document.getElementById('vista-foto-pieza');
+      const botonUI = document.getElementById('btn-foto-pieza-ui');
+      contenedor.innerHTML = ""; 
+      
+      memoriaFotosPiezas.forEach((archivo, index) => {
+        const div = document.createElement('div');
+        div.className = "item-foto";
+        let miniaturaHtml = "";
+        
+        if (archivo.type.startsWith("image/")) {
+          const urlMini = URL.createObjectURL(archivo);
+          miniaturaHtml = `<img src="${urlMini}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 4px; margin-right: 10px; border: 1px solid #ccc; flex-shrink: 0;">`;
+        }
+
+        div.innerHTML = `
+          <div style="display: flex; align-items: center; overflow: hidden; width: 100%;">
+            ${miniaturaHtml}
+            <div class="item-foto-texto">${archivo.type.startsWith("image/") ? "🖼️" : "📄"} <b>Foto ${index + 1}:</b> ${archivo.name}</div>
+          </div>
+          <button type="button" class="btn-eliminar-foto" onclick="quitarFotoPieza(${index})">✖</button>
+        `;
+        contenedor.appendChild(div);
+      });
+      
+      botonUI.classList.toggle("oculto", memoriaFotosPiezas.length >= 5);
+    }
+
+    function quitarFotoPieza(index) {
+      if (index !== undefined) {
+        memoriaFotosPiezas.splice(index, 1); 
+      } else {
+        memoriaFotosPiezas = []; 
+      }
+      actualizarVistaFotosPiezas(); 
+    }
+
+    function togglePiezas() {
+      const select = document.getElementById('in-req-piezas').value === 'SI';
+      document.getElementById('grupo-cual-pieza').classList.toggle('oculto', !select);
+      
+      ['in-cual-pieza', 'in-destino', 'in-num-parte'].forEach(id => {
+        const el = document.getElementById(id);
+        el.required = select;
+        if (!select) {
+          el.value = "";
+        }
+      });
+      
+      if (!select) {
+        quitarFotoPieza();
+      }
+    }
+
+    function validarTicket() {
+      const numTicket = document.getElementById('in-ticket').value;
+      const alerta = document.getElementById('alerta-msg');
+      
+      if (!numTicket) {
+        alerta.className = "msg-error"; 
+        alerta.innerText = "Falta ingresar el número de ticket."; 
+        return;
+      }
+      
+      alerta.className = "msg-info"; 
+      alerta.innerText = "Consultando base de datos...";
+      document.getElementById('form-reporte').classList.add('oculto');
+
+      google.script.run.withSuccessHandler(function(res) {
+        if (res.encontrado) {
+          alerta.innerText = "";
+          document.getElementById('in-cliente').value = res.cliente;
+          document.getElementById('in-equipo').value = res.equipo;
+          document.getElementById('in-ticket').readOnly = true;
+          document.getElementById('in-serie').value = res.noSerie || "";
+          document.getElementById('in-tecnico').value = (/no asignado|sin asignaci[oó]n|sin t[eé]cnico|^$/.test(res.tecnicoZoho.toLowerCase().trim())) ? "" : res.tecnicoZoho;
+          document.getElementById('form-reporte').classList.remove('oculto');
+        } else {
+          alerta.innerText = "";
+          if (confirm("El ticket #" + numTicket + " no fue localizado en los registros activos.\n\n¿Deseas generar un reporte manual desde cero para este ticket?")) {
+            ['in-cliente', 'in-equipo', 'in-tecnico', 'in-serie'].forEach(id => {
+              document.getElementById(id).value = "";
+            });
+            document.getElementById('in-ticket').readOnly = true;
+            document.getElementById('form-reporte').classList.remove('oculto');
+          } else {
+            alerta.className = "msg-error"; 
+            alerta.innerText = "Búsqueda cancelada.";
+          }
+        }
+      }).consultarTicketEnZoho(numTicket);
+    }
+
+    function cancelarFormulario() {
+      document.getElementById('form-reporte').reset();
+      document.getElementById('form-reporte').classList.add('oculto');
+      document.getElementById('in-ticket').value = "";
+      document.getElementById('in-ticket').readOnly = false;
+      document.getElementById('alerta-msg').innerText = "";
+      document.getElementById('grupo-cual-pieza').classList.add('oculto');
+      
+      ['in-cual-pieza', 'in-num-parte'].forEach(id => {
+        document.getElementById(id).required = false;
+      });
+      
+      memoriaFotos = [];
+      actualizarVistaFotos();
+      quitarFotoPieza(); 
+    }
+
+    function procesarImagen(file) {
+      return new Promise((resolve) => {
+        if (!file || !file.type.match(/image.*/)) {
+          const reader = new FileReader();
+          reader.onload = e => resolve({ base64: e.target.result, nombre: file.name });
+          reader.readAsDataURL(file);
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            let width = img.width, height = img.height;
+            if (width > 1000) { 
+              height *= 1000 / width; 
+              width = 1000; 
+            }
+            canvas.width = width; 
+            canvas.height = height;
+            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+            resolve({ base64: canvas.toDataURL('image/jpeg', 0.7), nombre: file.name });
+          }
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    document.getElementById('form-reporte').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.innerText = "Procesando información...";
+
+      const checkboxesClas = document.querySelectorAll('input[name="clasificacion"]:checked');
+      if(checkboxesClas.length === 0) {
+        alert("Por favor selecciona al menos una Clasificación.");
+        btn.disabled = false; 
+        btn.innerText = "Enviar Reporte"; 
+        return;
+      }
+
+      const payload = {
+        ticket: document.getElementById('in-ticket').value,
+        cliente: document.getElementById('in-cliente').value,
+        equipo: document.getElementById('in-equipo').value,
+        tecnicoReal: document.getElementById('in-tecnico').value,
+        noSerie: document.getElementById('in-serie').value,
+        clasificacion: Array.from(checkboxesClas).map(cb => cb.value).join(", "), 
+        descripcion: document.getElementById('in-descripcion').value,
+        accionCorrectivaTec: document.getElementById('in-correctiva-tec').value,
+        accionPreventivaTec: document.getElementById('in-preventiva-tec').value, 
+        reqPiezas: document.getElementById('in-req-piezas').value,     
+        cualPieza: document.getElementById('in-cual-pieza').value,
+        numParte: document.getElementById('in-num-parte').value, 
+        destinoPieza: document.getElementById('in-destino').value, 
+        reqApoyo: document.getElementById('in-req-apoyo').value,
+        archivosEvidencia: [], 
+        fotosPiezas: []
+      };
+
+      Promise.all([
+        Promise.all(memoriaFotos.map(f => procesarImagen(f))),
+        Promise.all(memoriaFotosPiezas.map(f => procesarImagen(f)))
+      ]).then(resultados => {
+        payload.archivosEvidencia = resultados[0];
+        payload.fotosPiezas = resultados[1];
+        
+        google.script.run.withSuccessHandler(res => {
+          alert(res.mensaje);
+          if (res.exito) {
+            cancelarFormulario(); 
+          }
+          btn.disabled = false; 
+          btn.innerText = "Enviar Reporte";
+        }).guardarReporteCalidad(payload);
+      }).catch(() => {
+        alert("Error al procesar las imágenes.");
+        btn.disabled = false; 
+        btn.innerText = "Enviar Reporte";
+      });
+    });
+
+    document.getElementById('toggle-buscador').addEventListener('click', function(e) {
+      e.preventDefault();
+      const caja = document.getElementById('caja-buscador');
+      const bloqueBusqueda = document.getElementById('bloque-busqueda');
+      const formReporte = document.getElementById('form-reporte');
+
+      if (caja.style.display === 'none') {
+        caja.style.display = 'block';
+        bloqueBusqueda.classList.add('oculto'); 
+        formReporte.classList.add('oculto');    
+        this.innerHTML = "✖ Cerrar buscador e ir a Nuevo Reporte"; 
+        this.style.backgroundColor = "#7F8C8D";
+      } else {
+        caja.style.display = 'none';
+        bloqueBusqueda.classList.remove('oculto'); 
+        this.innerHTML = "🔍 Buscar mis reportes anteriores";
+        this.style.backgroundColor = "#393D42";
+        document.getElementById('resultados-busqueda').innerHTML = "";
+        document.getElementById('in-buscar-ticket').value = "";
+      }
+    });
+
+    function ejecutarBusquedaReportes() {
+      const ticket = document.getElementById('in-buscar-ticket').value;
+      const divResultados = document.getElementById('resultados-busqueda');
+      const btn = document.getElementById('btn-ejecutar-busqueda');
+
+      if (!ticket) {
+        divResultados.innerHTML = `<p style="color: #E60404; font-size: 13px; font-weight: bold;">⚠️ Ingresa un número de ticket válido.</p>`;
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = "Buscando...";
+      divResultados.innerHTML = `<p style="font-size: 13px; color: #666; text-align: center;">Consultando base de datos...</p>`;
+
+      google.script.run.withSuccessHandler(function(res) {
+        btn.disabled = false;
+        btn.innerText = "Buscar Reportes";
+        
+        if (!res.exito) {
+          divResultados.innerHTML = `<p style="color: #E60404; font-size: 13px; font-weight: bold;">⚠️ ${res.mensaje}</p>`;
+          return;
+        }
+
+        let html = `<h5 style="margin: 15px 0 10px; color: #393D42;">Resultados encontrados (${res.datos.length}):</h5>`;
+        
+        res.datos.forEach((rep) => {
+          let linksFotos = "N/A";
+          if (rep.fotos && rep.fotos !== "N/A" && rep.fotos.trim() !== "") {
+            let urls = rep.fotos.split(",");
+            linksFotos = '<div style="display: flex; gap: 8px; margin-top: 5px; flex-wrap: wrap;">' + urls.map((url, idx) => {
+              let matchId = url.match(/[-\w]{25,}/);
+              if (matchId) {
+                return `<a href="${url.trim()}" target="_blank"><img src="https://drive.google.com/thumbnail?id=${matchId[0]}&sz=w200" style="width: 70px; height: 70px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></a>`;
+              }
+              return `<a href="${url.trim()}" target="_blank" style="color:#1A73E8; text-decoration:underline;">Foto ${idx + 1}</a>`;
+            }).join("") + '</div>';
+          }
+
+          let linksPiezas = "";
+          if (rep.piezas === 'SI' && rep.fotosPiezas && rep.fotosPiezas !== "N/A" && rep.fotosPiezas.trim() !== "") {
+            let urlsP = rep.fotosPiezas.split(",");
+            linksPiezas = '<div style="margin-top: 8px;"><strong>🔧 Evidencia Refacción:</strong></div><div style="display: flex; gap: 8px; margin-top: 5px; flex-wrap: wrap;">' + urlsP.map((url, idx) => {
+              let matchId = url.match(/[-\w]{25,}/);
+              if (matchId) {
+                return `<a href="${url.trim()}" target="_blank"><img src="https://drive.google.com/thumbnail?id=${matchId[0]}&sz=w200" style="width: 70px; height: 70px; object-fit: cover; border-radius: 4px; border: 1px solid #E60404; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></a>`;
+              }
+              return `<a href="${url.trim()}" target="_blank" style="color:#E60404; text-decoration:underline;"> Pieza ${idx + 1}</a>`;
+            }).join("") + '</div>';
+          }
+
+          html += `
+          <div style="background: white; border: 1px solid #ccc; border-left: 4px solid #E60404; padding: 12px; margin-bottom: 15px; border-radius: 4px; font-size: 13px; line-height: 1.5; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <p style="margin: 0 0 5px;"><strong> Fecha:</strong> ${rep.fecha}</p>
+            <p style="margin: 0 0 5px;"><strong> Técnico:</strong> ${rep.tecnico}</p>
+            <p style="margin: 0 0 5px;"><strong> Cliente:</strong> ${rep.cliente}</p>
+            <p style="margin: 0 0 5px;"><strong> Equipo:</strong> ${rep.equipo}</p>
+            <p style="margin: 0 0 5px;"><strong> NS:</strong> ${rep.ns}</p>
+            <p style="margin: 0 0 5px;"><strong> Clasificación:</strong> ${rep.clasificacion}</p>
+            <p style="margin: 0 0 5px;"><strong> Descripción / Falla:</strong> ${rep.falla}</p>
+            <p style="margin: 0 0 5px;"><strong> Acción Correctiva:</strong> ${rep.correctiva}</p>
+            <p style="margin: 0 0 5px;"><strong> Acción Preventiva:</strong> ${rep.preventiva}</p>
+            <div style="margin: 10px 0;"><strong> Evidencias:</strong> ${linksFotos}</div>
+            <p style="margin: 0 0 5px;"><strong> Refacciones solicitadas:</strong> ${rep.piezas}</p>
+            ${rep.piezas === 'SI' ? `<p style="margin: 0 0 5px;"><strong>&nbsp;&nbsp;↳ Pieza:</strong> ${rep.cualPieza} (No. Parte: ${rep.numParte})</p>
+            <p style="margin: 0 0 5px;"><strong>&nbsp;&nbsp;↳ Destino:</strong> ${rep.destino}</p>` : ''}
+            ${linksPiezas}
+            <p style="margin: 10px 0 0 0;"><strong> Apoyo de Ingeniería:</strong> ${rep.apoyo}</p>
+          </div>`;
+        });
+        divResultados.innerHTML = html;
+      }).buscarMisReportesFront(ticket);
+    }
+  </script>
+</body>
+</html>

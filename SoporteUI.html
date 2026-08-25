@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #E60404;
+      --secondary: #FFFFFF;
+      --accent: #393D42;
+      --bg-color: #F4F5F7;
+      --border-radius: 6px;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--accent);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .contenedor {
+      background-color: var(--secondary);
+      width: 100%;
+      max-width: 500px;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-top: 5px solid var(--primary);
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 22px;
+      text-align: center;
+    }
+    .ticket-badge {
+      background-color: #FEE2E2;
+      color: #B91C1C;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 24px;
+      font-size: 18px;
+    }
+    .ticket-cerrado {
+      background-color: #F3F4F6;
+      color: #4B5563;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      text-align: center;
+      border: 1px solid #D1D5DB;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: var(--border-radius);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: var(--primary);
+      color: white;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: var(--border-radius);
+      width: 100%;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #CC0000;
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="contenedor" id="panel-formulario">
+    <h2>Registro de Soporte Técnico</h2>
+    <? if (yaCerrado) { ?>
+      <div class="ticket-cerrado">
+        <h3 style="margin-top: 0; color: #111827;">🔒 Soporte Cerrado</h3>
+        <p style="margin-bottom: 8px;">El ticket <strong>#<?= ticketPrecargado ?></strong> ya fue atendido por <strong><?= ingenieroPrevio ?></strong>.</p>
+        <p style="font-size: 13px; color: #6B7280; margin-top: 0;">La información ya está en el archivo histórico y no puede ser modificada.</p>
+      </div>
+    <? } else { ?>
+      <div class="ticket-badge">Ticket #<?= ticketPrecargado ?></div>
+      <form id="form-cierre">
+        <label>Ingeniero que atendió (nombre y apellido):</label>
+        <input type="text" id="in-ingeniero" placeholder="Ej. Juan Pérez" required>
+        <label>Descripción del apoyo brindado (Solución):</label>
+        <textarea id="in-resolucion" rows="5" placeholder="Describe brevemente cómo ayudaste al técnico en campo a resolver el problema..." required></textarea>
+        <button type="submit" id="btn-guardar">Finalizar Soporte</button>
+      </form>
+    <? } ?>
+  </div>
+
+  <div class="contenedor" id="msg-exito" style="display: none;">
+    ✅ ¡Soporte cerrado con éxito!<br><br>
+    <span style="font-size: 14px; color: #666; font-weight: normal;">Los datos se han guardado en el archivo histórico. Ya puedes cerrar esta ventana.</span>
+  </div>
+
+  <? if (!yaCerrado) { ?>
+  <script>
+    const idIncidencia = "<?= idIncidencia ?>";
+
+    document.getElementById('form-cierre').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      if (!idIncidencia) {
+        alert("Error: Enlace inválido o incompleto.");
+        return;
+      }
+
+      const btn = document.getElementById('btn-guardar');
+      btn.disabled = true;
+      btn.innerText = "Guardando...";
+
+      const ingeniero = document.getElementById('in-ingeniero').value;
+      const resolucion = document.getElementById('in-resolucion').value;
+
+      google.script.run.withSuccessHandler(function(res) {
+        if (res.exito) {
+          document.getElementById('panel-formulario').style.display = 'none';
+          document.getElementById('msg-exito').style.display = 'block';
+        } else {
+          alert(res.mensaje);
+          btn.disabled = false;
+          btn.innerText = "Finalizar Soporte";
+        }
+      }).guardarCierreSoporte(idIncidencia, ingeniero, resolucion);
+    });
+  </script>
+  <? } ?>
+</body>
+</html>
